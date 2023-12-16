@@ -57,7 +57,7 @@ To run this code, you have two options: clone the repository or use a Colab Note
 
 ![Question 2](images/output-2.png)
 
-![Question 2](images/output-2.png)
+![Question 2](images/output-3.png)
 
 **Test Case 2**
 
