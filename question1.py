@@ -2,7 +2,6 @@
 Question 1
 """
 import math
-from prettytable import PrettyTable
 
 OUTPUT_FORMAT = """
 SquarePyramid
@@ -17,10 +16,38 @@ TSA: {tsa}
 Slant Height: {slant_height}
 """
 
+def print_table(headers, data, name=None):
+    """
+    Utility function for printing a table
+    """
+    column_widths = [max(len(str(header)), max(len(str(row[i])) for row in data)) for i, header in enumerate(headers)]
+
+    header_line = " | ".join(f"{header:^{width}}" for header, width in zip(headers, column_widths))
+    separator_line = "-+-".join("-" * width for width in column_widths)
+    
+    if name:
+        initial_line = "-"*len(separator_line)
+        title_line = f"{name:^{len(separator_line)}}"
+        print(f"+{initial_line}+")
+        print(f"|{title_line}|")
+
+    print(f"+{separator_line}+")
+    print(f"|{header_line}|")
+    print(f"+{separator_line}+")
+
+    # Print the data rows
+    for row in data:
+        row_line = " | ".join(f"{str(value):^{width}}" for value, width in zip(row, column_widths))
+        print(f"|{row_line}|")
+    
+    print(f"+{separator_line}+")
+
+
 class SquarePyramid:
     """
     SquarePyramid calss
     """
+
     def __init__(self, side_length, height):
         """
         Constructor for the SquarePyramid Class
@@ -70,7 +97,6 @@ class SquarePyramid:
         """
         return math.sqrt((self.side_length / 2) ** 2 + self.height ** 2)
 
-
     def __str__(self):
         """
         Override str method of the function
@@ -86,6 +112,7 @@ class SquarePyramid:
             slant_height=self.slant_height
         )
 
+
 def main():
     """
     Ask user for the inputs and calculate stats for each SquarePyramid
@@ -95,18 +122,19 @@ def main():
     N = int(input("Enter the value for N: "))
     side_length = int(input("Enter the length of side a: "))
 
-    table = PrettyTable(['Height', 'Volume', 'Letral Surface Area', 'Total Surface Area', 'Slant Height'], align="l")
+    headers = ['Height', 'Volume', 'Letral Surface Area', 'Total Surface Area', 'Slant Height']
+    data = []
 
     for h in range(1, N+1, 2):
         sp = SquarePyramid(side_length, h)
-        table.add_row([
+        data.append([
             f'{sp.height}',
             f'{sp.volume:.0f} m\N{SUPERSCRIPT THREE}',
             f'{sp.lsa:.3f} m\N{SUPERSCRIPT TWO}',
             f'{sp.tsa:.3f} m\N{SUPERSCRIPT TWO}',
             f'{sp.slant_height:.3f} m',
         ])
-    print(table)
+    print_table(headers, data)
 
 
 if __name__ == '__main__':
