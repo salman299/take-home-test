@@ -1,9 +1,30 @@
 import math
-import locale
-from prettytable import PrettyTable
 
-locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
+def print_table(headers, data, name=None):
+    """
+    Utility function for printing a table
+    """
+    column_widths = [max(len(str(header)), max(len(str(row[i])) for row in data)) for i, header in enumerate(headers)]
 
+    header_line = " | ".join(f"{header:^{width}}" for header, width in zip(headers, column_widths))
+    separator_line = "-+-".join("-" * width for width in column_widths)
+    
+    if name:
+        initial_line = "-"*len(separator_line)
+        title_line = f"{name:^{len(separator_line)}}"
+        print(f"+{initial_line}+")
+        print(f"|{title_line}|")
+
+    print(f"+{separator_line}+")
+    print(f"|{header_line}|")
+    print(f"+{separator_line}+")
+
+    # Print the data rows
+    for row in data:
+        row_line = " | ".join(f"{str(value):^{width}}" for value, width in zip(row, column_widths))
+        print(f"|{row_line}|")
+    
+    print(f"+{separator_line}+")
 
 class CountryEconomicIndicator:
     """
@@ -169,18 +190,18 @@ class CountryEconomicIndicator:
         Displays a table containing information such as Year, GDP Value, Growth Rate, and Ranking for each year.
         Additionally, prints the Average Annual Growth Rate, Compound Annual Growth Rate, and Standard Deviation.
         """
-        table = PrettyTable(
-            ['Year', 'GDP Value', 'Growth Rate', 'Ranking'], align="l")
-        table.title = f'Country {self.country_name}'
+        headers = ['Year', 'GDP Value', 'Growth Rate', 'Ranking']
+        title = f'Country {self.country_name}'
+        data = []
         for i in range(len(self.yearly_gdp_values)):
-            table.add_row([
+            data.append([
                 f'{i+1}',
-                locale.currency(self.yearly_gdp_values[i], grouping=True),
+                f'${self.yearly_gdp_values[i]:,.2f}',
                 f'{self.growth_rates[i]:.2f}%',
                 f'{self.rankings[i]}',
             ])
 
-        print(table)
+        print_table(headers, data, name=title)
         print(f'Average Annual Growth Rate: {self.average_growth_rate:.2f}%')
         print(f'Compound Annual Growth Rate: {self.compound_growth_rate:.2f}%')
         print(f'Standard Deviation: {self.standard_deviation:.3f}')
